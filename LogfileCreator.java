@@ -4,7 +4,7 @@ import java.util.*;
 /**
  * A class for creating log files of random data.
  * 
- * @author David J. Barnes and Michael Kölling
+ * @author David DiBenedetto, David J. Barnes and Michael Kölling
  * @version    2016.02.29
  */
 public class LogfileCreator
@@ -18,7 +18,7 @@ public class LogfileCreator
     {
         rand = new Random();
     }
-    
+
     /**
      * Create a file of random log entries.
      * @param filename The file to write.
@@ -28,7 +28,7 @@ public class LogfileCreator
     public boolean createFile(String filename, int numEntries)
     {
         boolean success = false;
-        
+
         if(numEntries > 0) {
             try (FileWriter writer = new FileWriter(filename)) {
                 LogEntry[] entries = new LogEntry[numEntries];
@@ -40,17 +40,17 @@ public class LogfileCreator
                     writer.write(entries[i].toString());
                     writer.write('\n');
                 }
-                
+
                 success = true;
             }
             catch(IOException e) {
                 System.err.println("There was a problem writing to " + filename);
             }
-                
+
         }
         return success;
     }
-    
+
     /**
      * Create a single (random) entry for a log file.
      * @return A log entry containing random data.
@@ -66,4 +66,42 @@ public class LogfileCreator
         return new LogEntry(year, month, day, hour, minute);
     }
 
+    /**
+     * Create a log file of random data for the years 2015-2019.
+     *
+     * @param filename The file to write.
+     * @param numEntries How many entries.
+     * @return true if successful, false otherwise.
+     */
+    public boolean createFiveYearLogfile(String filename, int numEntries) {
+        boolean success = false;
+
+        if (numEntries > 0) {
+            try (FileWriter writer = new FileWriter(filename)) {
+                for (int year = 2015; year <= 2019; year++) {
+                    for (int i = 0; i < numEntries / 5; i++) {
+                        LogEntry entry = createEntry(year);
+                        writer.write(entry.toString());
+                        writer.write('\n');
+                    }
+                }
+
+                success = true;
+            } catch (IOException e) {
+                System.err.println("There was a problem writing to " + filename);
+            }
+        }
+
+        return success;
+    }
+
+    public LogEntry createEntry(int year)
+    {
+        int month = 1 + rand.nextInt(12);
+        // Avoid the complexities of days-per-month.
+        int day = 1 + rand.nextInt(28);
+        int hour = rand.nextInt(24);
+        int minute = rand.nextInt(60);
+        return new LogEntry(year, month, day, hour, minute);
+    }   
 }
